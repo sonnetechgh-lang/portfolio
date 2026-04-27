@@ -276,6 +276,114 @@
     animation: scrollLine 2s ease-in-out infinite;
   }
 
+  /* ABOUT ME */
+  #about {
+    padding: 120px 48px;
+    border-top: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+  
+  .about-image {
+    position: relative;
+    border: 1px solid var(--line);
+    overflow: hidden;
+    aspect-ratio: 3/4;
+    border-radius: 8px;
+  }
+  
+  .about-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  
+  .about-image::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 100% 100% at 50% 50%, rgba(200,240,96,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  .about-content {}
+  
+  .about-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+  }
+  
+  .about-heading {
+    font-family: var(--serif);
+    font-size: clamp(32px, 5vw, 56px);
+    line-height: 1.2;
+    font-weight: 400;
+    margin-bottom: 24px;
+  }
+  
+  .about-heading em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  
+  .about-text {
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.9;
+    margin-bottom: 32px;
+  }
+  
+  .about-text strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+  
+  .about-stats {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 48px;
+  }
+  
+  .stat-item {
+    flex: 1;
+  }
+  
+  .stat-number {
+    font-family: var(--serif);
+    font-size: 28px;
+    font-weight: 400;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  
+  @media (max-width: 900px) {
+    #about {
+      grid-template-columns: 1fr;
+      gap: 48px;
+      padding: 80px 24px;
+    }
+    
+    .about-image {
+      aspect-ratio: 4/5;
+    }
+  }
+
   /* WHAT I BUILD */
   #build {
     padding: 120px 48px;
@@ -811,6 +919,40 @@
         <a href="#work" class="btn-ghost">See Work ↓</a>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- ABOUT ME -->
+<section id="about">
+  <div class="about-image reveal">
+    <img src="projects/Picture/Ayomah_Pic.png" alt="Salifu Abdul-Mannan Ayomah - Product Builder" />
+  </div>
+  <div class="about-content reveal reveal-delay-1">
+    <p class="about-tag">About Me</p>
+    <h2 class="about-heading">I ship <em>real products.</em></h2>
+    <p class="about-text">
+      I'm Salifu Abdul-Mannan Ayomah, a fullstack JavaScript product builder based in Accra, Ghana. For the last few years, I've been designing, architecting, and shipping web applications that solve real business problems — from SaaS platforms to custom business systems to high-performance client websites.
+    </p>
+    <p class="about-text">
+      I specialize in <strong>end-to-end product development</strong>. That means I handle everything: data modeling, API architecture, frontend design, deployment, and handoff. No middlemen, no confusion — just working directly with founders and teams to turn ideas into live products.
+    </p>
+    <div class="about-stats">
+      <div class="stat-item">
+        <div class="stat-number">50+</div>
+        <div class="stat-label">Products Built</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">6+</div>
+        <div class="stat-label">Years Experience</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">100%</div>
+        <div class="stat-label">Client Satisfaction</div>
+      </div>
+    </div>
+    <p class="about-text">
+      I work <strong>remote-first</strong> with clients worldwide. Time zones aren't a problem — clear communication and reliable delivery are what matter.
+    </p>
   </div>
 </section>
 
