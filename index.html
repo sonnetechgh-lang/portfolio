@@ -1,558 +1,196 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Salifu Abdul-Mannan Ayomah | Product Builder</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet" />
-
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --bg: #080808;
-    --bg2: #0f0f0f;
-    --bg3: #151515;
-    --line: rgba(255,255,255,0.07);
-    --text: #f0ede8;
-    --muted: rgba(240,237,232,0.45);
-    --accent: #c8f060;
-    --accent2: #a8d040;
-    --mono: 'DM Mono', monospace;
-    --sans: 'Manrope', sans-serif;
-  }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--sans);
-    font-size: 16px;
-    line-height: 1.6;
-    overflow-x: hidden;
-    cursor: none;
-  }
-
-  /* CUSTOM CURSOR */
-  .cursor {
-    position: fixed;
-    width: 10px; height: 10px;
-    background: var(--accent);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9999;
-    transform: translate(-50%, -50%);
-    transition: transform 0.1s ease, width 0.2s ease, height 0.2s ease, background 0.2s ease;
-    mix-blend-mode: difference;
-  }
-  .cursor-ring {
-    position: fixed;
-    width: 36px; height: 36px;
-    border: 1px solid rgba(200,240,96,0.4);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9998;
-    transform: translate(-50%, -50%);
-    transition: transform 0.12s ease, width 0.25s ease, height 0.25s ease, opacity 0.2s ease;
-  }
-  body:hover .cursor-ring { opacity: 1; }
-  .cursor.hovered { width: 18px; height: 18px; }
-  .cursor-ring.hovered { width: 56px; height: 56px; border-color: rgba(200,240,96,0.2); }
-
-  /* NOISE OVERLAY */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 9000;
-    opacity: 0.35;
-  }
-
-  /* NAV */
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    padding: 24px 48px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: border-color 0.3s, background 0.3s;
-  }
-  nav.scrolled {
-    background: rgba(8,8,8,0.92);
-    border-bottom: 1px solid var(--line);
-    backdrop-filter: blur(12px);
-  }
-  .nav-logo {
-    font-family: var(--mono);
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    color: var(--text);
-    text-decoration: none;
-  }
-  .nav-logo span { color: var(--accent); }
-  .nav-links { display: flex; gap: 36px; align-items: center; }
-  .nav-links a {
-    font-family: var(--mono);
-    font-size: 12px;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-    text-decoration: none;
-    text-transform: uppercase;
-    transition: color 0.2s;
-  }
-  .nav-links a:hover { color: var(--text); }
-  .nav-cta {
-    font-family: var(--mono);
-    font-size: 12px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    background: var(--accent);
-    color: #080808;
-    padding: 10px 20px;
-    text-decoration: none;
-    font-weight: 500;
-    transition: background 0.2s, transform 0.15s;
-  }
-  .nav-cta:hover { background: var(--accent2); transform: translateY(-1px); }
-
-  /* HERO */
-  #hero {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 0 24px;
-    position: relative;
-    overflow: hidden;
-  }
-  .hero-bg-image {
-    position: absolute;
-    inset: 0;
-    background: url('projects/Picture/Ayomah_Pic.png') center/cover no-repeat;
-    opacity: 0.12;
-    filter: grayscale(100%) contrast(110%);
-    z-index: -1;
-  }
-  .hero-grid {
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(var(--line) 1px, transparent 1px),
-      linear-gradient(90deg, var(--line) 1px, transparent 1px);
-    background-size: 60px 60px;
-    mask-image: radial-gradient(circle at 50% 50%, black 20%, transparent 80%);
-    opacity: 0.5;
-    z-index: 0;
-  }
-  .hero-tag {
-    font-family: var(--mono);
-    font-size: 13px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 24px;
-    opacity: 0;
-    animation: fadeIn 0.8s 0.2s forwards;
-    position: relative;
-    z-index: 1;
-  }
-  .hero-name {
-    font-size: clamp(48px, 8vw, 96px);
-    line-height: 1.1;
-    letter-spacing: -0.03em;
-    font-weight: 600;
-    margin-bottom: 24px;
-    opacity: 0;
-    animation: fadeUp 0.9s 0.35s forwards;
-    position: relative;
-    z-index: 1;
-  }
-  .hero-sub {
-    font-size: clamp(18px, 3vw, 24px);
-    line-height: 1.5;
-    color: var(--muted);
-    max-width: 800px;
-    margin-bottom: 48px;
-    opacity: 0;
-    animation: fadeUp 0.9s 0.5s forwards;
-    position: relative;
-    z-index: 1;
-  }
-  .hero-actions-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 32px;
-    opacity: 0;
-    animation: fadeUp 0.9s 0.65s forwards;
-    position: relative;
-    z-index: 1;
-  }
-  .hero-actions { 
-    display: flex; 
-    gap: 20px; 
-    align-items: center;
-  }
-  .hero-socials {
-    display: flex;
-    gap: 24px;
-    align-items: center;
-  }
-  .hero-social-link {
-    color: var(--muted);
-    transition: color 0.3s ease, transform 0.3s ease;
-  }
-  .hero-social-link:hover {
-    color: var(--accent);
-    transform: translateY(-3px);
-  }
-  .hero-social-link svg {
-    width: 20px;
-    height: 20px;
-    fill: currentColor;
-  }
-  .btn-primary {
-    font-family: var(--mono);
-    font-size: 13px;
-    letter-spacing: 0.08em;
-    background: var(--accent);
-    color: #080808;
-    padding: 14px 28px;
-    text-decoration: none;
-    font-weight: 500;
-    text-transform: uppercase;
-    transition: background 0.2s, transform 0.15s;
-    display: inline-block;
-  }
-  .btn-primary:hover { background: var(--accent2); transform: translateY(-2px); }
-  .btn-ghost {
-    font-family: var(--mono);
-    font-size: 13px;
-    letter-spacing: 0.08em;
-    color: var(--muted);
-    text-decoration: none;
-    text-transform: uppercase;
-    border-bottom: 1px solid var(--line);
-    padding-bottom: 2px;
-    transition: color 0.2s, border-color 0.2s;
-  }
-  .btn-ghost:hover { color: var(--text); border-color: var(--muted); }
-
-  /* SECTION DEFAULTS */
-  section { padding: 120px 48px; border-top: 1px solid var(--line); }
-  .section-label {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 48px;
-    display: block;
-  }
-
-  /* EXPERTISE */
-  #expertise { background: var(--bg2); }
-  .expertise-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 32px;
-  }
-  .expertise-card {
-    background: var(--bg);
-    padding: 40px;
-    border: 1px solid var(--line);
-    transition: transform 0.3s ease, border-color 0.3s ease;
-  }
-  .expertise-card:hover { transform: translateY(-8px); border-color: var(--accent); }
-  .expertise-icon { font-size: 32px; color: var(--accent); margin-bottom: 24px; display: block; }
-  .expertise-icon svg { width: 32px; height: 32px; stroke: currentColor; }
-  .expertise-title { font-size: 24px; font-weight: 500; margin-bottom: 16px; }
-  .expertise-desc { font-size: 15px; color: var(--muted); line-height: 1.7; margin-bottom: 24px; }
-  .expertise-tags { display: flex; flex-wrap: wrap; gap: 8px; }
-  .exp-tag { font-family: var(--mono); font-size: 11px; padding: 4px 10px; background: var(--bg3); color: var(--text); border-radius: 4px; }
-
-  /* WORK */
-  .work-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 64px; }
-  .work-title { font-size: clamp(32px, 5vw, 64px); font-weight: 600; }
-  .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 40px; }
-  .project { border: 1px solid var(--line); background: var(--bg); overflow: hidden; transition: transform 0.3s ease, border-color 0.3s ease; }
-  .project:hover { transform: translateY(-8px); border-color: var(--accent); }
-  .project-visual { width: 100%; aspect-ratio: 16/9; background: var(--bg3); overflow: hidden; position: relative; }
-  .project-visual img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
-  .project:hover .project-visual img { transform: scale(1.05); }
-  .project-info { padding: 32px; }
-  .project-meta { display: flex; justify-content: space-between; margin-bottom: 16px; }
-  .project-index { font-family: var(--mono); font-size: 11px; color: var(--accent); }
-  .project-year { font-family: var(--mono); font-size: 11px; color: var(--muted); }
-  .project-name { font-size: 28px; font-weight: 500; margin-bottom: 12px; }
-  .project-desc { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 24px; }
-  .project-stack { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
-  .stack-tag { font-family: var(--mono); font-size: 10px; padding: 2px 8px; border: 1px solid var(--line); color: var(--muted); }
-  .project-link { font-family: var(--mono); font-size: 12px; color: var(--accent); text-decoration: none; font-weight: 500; }
-
-  /* TIMELINE */
-  #journey { max-width: 1000px; margin: 0 auto; border-top: 1px solid var(--line); }
-  .timeline { display: flex; flex-direction: column; gap: 64px; border-left: 1px solid var(--line); padding-left: 48px; margin-left: 16px; position: relative; }
-  .timeline-item { position: relative; }
-  .timeline-item::before { content: ''; position: absolute; left: -53px; top: 8px; width: 10px; height: 10px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 10px var(--accent); }
-  .timeline-num { font-family: var(--mono); font-size: 12px; color: var(--accent); margin-bottom: 12px; display: block; }
-  .timeline-title { font-size: 24px; font-weight: 500; margin-bottom: 16px; }
-  .timeline-desc { font-size: 15px; color: var(--muted); line-height: 1.7; max-width: 600px; }
-
-  /* HIRE ME */
-  .hire-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
-  .hire-heading { font-size: clamp(40px, 6vw, 80px); font-weight: 600; line-height: 1.1; margin-bottom: 32px; }
-  .hire-email { display: block; font-size: clamp(20px, 3vw, 32px); color: var(--text); text-decoration: none; border-bottom: 1px solid var(--line); padding-bottom: 16px; margin-bottom: 40px; transition: color 0.2s; }
-  .hire-email:hover { color: var(--accent); }
-  .hire-links { display: flex; gap: 24px; }
-  .hire-link { font-family: var(--mono); font-size: 12px; text-transform: uppercase; color: var(--muted); text-decoration: none; }
-  .hire-link:hover { color: var(--text); }
-
-  /* FOOTER */
-  footer { padding: 48px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
-  .footer-copy { font-family: var(--mono); font-size: 11px; color: var(--muted); }
-
-  /* REVEAL ON SCROLL */
-  .reveal { opacity: 0; transform: translateY(30px); transition: 0.8s ease-out; }
-  .reveal.visible { opacity: 1; transform: translateY(0); }
-  .reveal-delay-1 { transition-delay: 0.1s; }
-  .reveal-delay-2 { transition-delay: 0.2s; }
-
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-  @media (max-width: 900px) {
-    section { padding: 80px 24px; }
-    nav { padding: 20px 24px; }
-    .nav-links { display: none; }
-    .projects-grid { grid-template-columns: 1fr; }
-    .hire-inner { grid-template-columns: 1fr; gap: 40px; }
-    footer { flex-direction: column; gap: 16px; text-align: center; }
-    .cursor, .cursor-ring { display: none; }
-    body { cursor: auto; }
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Salifu Abdul-Mannan Ayomah builds secure digital products, business systems, and high-performance web experiences from Accra, Ghana.">
+  <meta property="og:title" content="Abdul-Mannan Ayomah | Product Builder">
+  <meta property="og:description" content="Secure digital products, business systems, and high-performance web experiences.">
+  <meta property="og:type" content="website">
+  <title>Abdul-Mannan Ayomah | Product Builder</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
 
-<div class="cursor" id="cursor"></div>
-<div class="cursor-ring" id="cursorRing"></div>
-
-<nav id="nav">
-  <a href="#hero" class="nav-logo">Abdul-Mannan<span>.</span>Ayomah</a>
-  <div class="nav-links">
-    <a href="#expertise">Expertise</a>
-    <a href="#work">Work</a>
-    <a href="#journey">Journey</a>
-    <a href="#hire" class="nav-cta">Hire Me</a>
-  </div>
-</nav>
-
-<section id="hero">
-  <div class="hero-bg-image"></div>
-  <div class="hero-grid"></div>
-  <p class="hero-tag">Fullstack JS · Cyber Security</p>
-  <h1 class="hero-name">Salifu Abdul-Mannan Ayomah</h1>
-  <p class="hero-sub">
-    I design, architect, and protect web applications that solve real problems. From idea to deployed product, I build software that ships.
-  </p>
-  <div class="hero-actions-container">
-    <div class="hero-actions">
-      <a href="#hire" class="btn-primary">Get In Touch</a>
-      <a href="#work" class="btn-ghost">View My Work ↓</a>
-    </div>
-    <div class="hero-socials">
-      <a href="mailto:mannansalifu@gmail.com" class="hero-social-link" title="Email">
-        <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-      </a>
-      <a href="https://github.com" target="_blank" class="hero-social-link" title="GitHub">
-        <svg viewBox="0 0 24 24"><path d="M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 8.84,21.5C9.34,21.58 9.5,21.27 9.5,21C9.5,20.77 9.49,20.14 9.49,19.31C6.73,19.91 6.14,17.97 6.14,17.97C5.68,16.81 5.03,16.5 5.03,16.5C4.12,15.88 5.1,15.9 5.1,15.9C6.1,15.97 6.63,16.93 6.63,16.93C7.5,18.45 8.97,18 9.54,17.76C9.63,17.11 9.89,16.67 10.17,16.42C7.95,16.17 5.62,15.31 5.62,11.5C5.62,10.39 6,9.5 6.65,8.79C6.55,8.54 6.2,7.5 6.75,6.15C6.75,6.15 7.59,5.88 9.5,7.17C10.29,6.95 11.15,6.84 12,6.84C12.85,6.84 13.71,6.95 14.5,7.17C16.41,5.88 17.25,6.15 17.25,6.15C17.8,7.5 17.45,8.54 17.35,8.79C18,9.5 18.38,10.39 18.38,11.5C18.38,15.32 16.04,16.16 13.81,16.41C14.17,16.72 14.5,17.33 14.5,18.26C14.5,19.6 14.5,20.68 14.5,21C14.5,21.27 14.66,21.59 15.17,21.5C19.14,20.16 22,16.42 22,12A10,10 0 0,0 12,2Z"/></svg>
-      </a>
-      <a href="https://wa.me/233545489242" target="_blank" class="hero-social-link" title="WhatsApp">
-        <svg viewBox="0 0 24 24"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.66 20.15 9.3 19.81 8.1 19.14L7.81 18.98L4.69 19.8L5.52 16.76L5.34 16.48C4.61 15.31 4.22 13.96 4.22 12.58C4.21 11.92 4.22 3.67 12.05 3.67M8.53 7.33C8.37 7.33 8.1 7.39 7.87 7.64C7.65 7.89 7 8.5 7 9.71C7 10.93 7.89 12.1 8.01 12.26C8.14 12.44 9.76 14.94 12.25 16.01C12.84 16.27 13.3 16.42 13.66 16.53C14.25 16.72 14.79 16.69 15.22 16.63C15.7 16.56 16.68 16.03 16.89 15.45C17.1 14.87 17.1 14.38 17.04 14.27C16.97 14.17 16.81 14.11 16.56 13.99C16.32 13.86 15.12 13.28 14.9 13.2C14.67 13.12 14.51 13.08 14.35 13.32C14.18 13.57 13.7 14.14 13.55 14.32C13.41 14.5 13.27 14.51 13.03 14.39C12.78 14.27 11.99 14.01 11.05 13.17C10.32 12.52 9.83 11.71 9.68 11.47C9.54 11.22 9.67 11.09 9.79 10.97C9.9 10.86 10.04 10.68 10.16 10.54C10.28 10.4 10.32 10.3 10.4 10.16C10.48 10.03 10.44 9.91 10.38 9.79C10.32 9.67 9.83 8.46 9.62 7.96C9.42 7.47 9.21 7.53 9.06 7.53C8.91 7.53 8.74 7.33 8.53 7.33Z"/></svg>
-      </a>
-      <a href="tel:+233545489242" class="hero-social-link" title="Call">
-        <svg viewBox="0 0 24 24"><path d="M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82 16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21A17,17 0 0,1 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z"/></svg>
-      </a>
-      <a href="https://linkedin.com" target="_blank" class="hero-social-link" title="LinkedIn">
-        <svg viewBox="0 0 24 24"><path d="M19,3A2,2 0 0,1 21,5V19A2,2 0 0,1 19,21H5A2,2 0 0,1 3,19V5A2,2 0 0,1 5,3H19M18.5,18.5V13.2A3.26,3.26 0 0,0 15.24,9.94C13.93,9.94 13,10.63 12.59,11.24V10.13H10.13V18.5H12.59V13.85C12.59,12.59 13.59,11.58 14.85,11.58C16.11,11.58 17.11,12.59 17.11,13.85V18.5H18.5M6.66,8.22A1.44,1.44 0 1,0 5.22,6.78A1.44,1.44 0 0,0 6.66,8.22M8.13,18.5V10.13H5.22V18.5H8.13Z"/></svg>
-      </a>
-    </div>
-  </div>
-</section>
-
-<section id="expertise">
-  <p class="section-label reveal">Expertise</p>
-  <div class="expertise-grid">
-    <div class="expertise-card reveal">
-      <span class="expertise-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-      </span>
-      <h3 class="expertise-title">Full Stack Development</h3>
-      <p class="expertise-desc">Building scalable web products with modern frameworks. Focus on clean architecture and high-performance user interfaces.</p>
-      <div class="expertise-tags">
-        <span class="exp-tag">React</span>
-        <span class="exp-tag">Next.js</span>
-        <span class="exp-tag">Node.js</span>
-        <span class="exp-tag">TypeScript</span>
+  <header class="site-header" id="site-header">
+    <nav class="nav container" aria-label="Primary navigation">
+      <a href="#hero" class="brand">Abdul-Mannan<span>.</span></a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu">
+        <span class="sr-only">Open navigation</span>
+        <span aria-hidden="true"></span><span aria-hidden="true"></span>
+      </button>
+      <div class="nav-links" id="site-menu">
+        <a href="#expertise">Capabilities</a>
+        <a href="#work">Selected work</a>
+        <a href="#journey">Process</a>
+        <a class="nav-cta" href="#hire">Start a project</a>
       </div>
-    </div>
-    <div class="expertise-card reveal reveal-delay-1">
-      <span class="expertise-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-      </span>
-      <h3 class="expertise-title">Cyber Security</h3>
-      <p class="expertise-desc">Integrating security best practices into the development lifecycle. Secure authentication, data protection, and secure API design.</p>
-      <div class="expertise-tags">
-        <span class="exp-tag">Auth</span>
-        <span class="exp-tag">Encryption</span>
-        <span class="exp-tag">Secure SDLC</span>
-      </div>
-    </div>
-    <div class="expertise-card reveal reveal-delay-2">
-      <span class="expertise-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-      </span>
-      <h3 class="expertise-title">Business Systems</h3>
-      <p class="expertise-desc">Custom tools that solve operational challenges. POS systems, inventory trackers, and internal management platforms.</p>
-      <div class="expertise-tags">
-        <span class="exp-tag">SaaS</span>
-        <span class="exp-tag">Dashboards</span>
-        <span class="exp-tag">CRM</span>
-      </div>
-    </div>
-  </div>
-</section>
+    </nav>
+  </header>
 
-<section id="work">
-  <div class="work-header reveal">
-    <h2 class="work-title">Selected Work</h2>
-  </div>
-  <div class="projects-grid">
-    <div class="project reveal">
-      <div class="project-visual"><img src="projects/addesk/addesk_image.png" alt="AdDesk"></div>
-      <div class="project-info">
-        <div class="project-meta"><span class="project-index">01</span><span class="project-year">2024</span></div>
-        <h3 class="project-name">AdDesk</h3>
-        <p class="project-desc">A content creator platform that eliminates back-and-forth messaging for ad partnerships. Seamless selection and payment.</p>
-        <div class="project-stack"><span class="stack-tag">Next.js</span><span class="stack-tag">Node.js</span><span class="stack-tag">Prisma</span></div>
-        <a href="https://addesk.sonnetghana.com" target="_blank" class="project-link">View Project ↗</a>
+  <main id="main-content">
+    <section class="hero container" id="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <h1 id="hero-title">I build secure digital products that move businesses forward.</h1>
+        <p class="hero-lede">From first idea to production, I design, architect, and ship web applications, business systems, and client experiences that solve real problems.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#hire">Start a project <span aria-hidden="true">→</span></a>
+          <a class="button button-secondary" href="#work">Explore selected work</a>
+        </div>
+        <p class="availability"><span aria-hidden="true"></span> Available for select projects worldwide</p>
       </div>
-    </div>
-    <div class="project reveal">
-      <div class="project-visual"><img src="projects/sonnet-pos/sonnet-pos_imgage.png" alt="Sonnet POS"></div>
-      <div class="project-info">
-        <div class="project-meta"><span class="project-index">02</span><span class="project-year">2024</span></div>
-        <h3 class="project-name">Sonnet POS</h3>
-        <p class="project-desc">A complete operational platform for veterinary clinics replacing paper systems. Handles inventory, sales, and records.</p>
-        <div class="project-stack"><span class="stack-tag">Next.js</span><span class="stack-tag">Node.js</span><span class="stack-tag">PostgreSQL</span></div>
-        <span class="project-link" style="color:var(--muted)">Private Project</span>
+      <div class="portrait-wrap">
+        <div class="portrait-accent" aria-hidden="true"></div>
+        <img class="portrait" src="Ayomah.jpg" alt="Salifu Abdul-Mannan Ayomah" width="1706" height="2560" fetchpriority="high">
       </div>
-    </div>
-    <div class="project reveal">
-      <div class="project-visual"><img src="projects/dopephotography/dopephotography_image.png" alt="Dope Photography"></div>
-      <div class="project-info">
-        <div class="project-meta"><span class="project-index">03</span><span class="project-year">2025</span></div>
-        <h3 class="project-name">Dope Photography</h3>
-        <p class="project-desc">Premium studio website with filterable gallery and booking systems. Designed for visual impact.</p>
-        <div class="project-stack"><span class="stack-tag">HTML/CSS</span><span class="stack-tag">JS</span><span class="stack-tag">WhatsApp API</span></div>
-        <a href="https://www.dopephotographygh.com" target="_blank" class="project-link">View Live Site ↗</a>
+    </section>
+
+    <section class="tech-strip" aria-labelledby="technologies-title">
+      <h2 class="sr-only" id="technologies-title">Technologies I use</h2>
+      <div class="tech-marquee">
+        <div class="tech-track">
+          <div class="tech-list">
+            <span class="tech-item"><i class="devicon-javascript-plain tech-icon tech-js" aria-hidden="true"></i><span>JavaScript</span></span>
+            <span class="tech-item"><i class="devicon-github-original tech-icon tech-github" aria-hidden="true"></i><span>GitHub</span></span>
+            <span class="tech-item"><i class="devicon-postgresql-plain tech-icon tech-postgres" aria-hidden="true"></i><span>PostgreSQL</span></span>
+            <span class="tech-item"><i class="devicon-mysql-original tech-icon tech-mysql" aria-hidden="true"></i><span>MySQL</span></span>
+            <span class="tech-item"><i class="devicon-microsoftsqlserver-plain tech-icon tech-sql" aria-hidden="true"></i><span>SQL Server</span></span>
+            <span class="tech-item"><i class="devicon-microsoftazure-plain tech-icon tech-azure" aria-hidden="true"></i><span>Azure</span></span>
+            <span class="tech-item"><i class="devicon-render-original tech-icon tech-render" aria-hidden="true"></i><span>Render</span></span>
+            <span class="tech-item"><i class="devicon-react-original tech-icon tech-react" aria-hidden="true"></i><span>React</span></span>
+            <span class="tech-item"><i class="devicon-nodejs-plain tech-icon tech-node" aria-hidden="true"></i><span>Node.js</span></span>
+            <span class="tech-item"><i class="devicon-html5-plain tech-icon tech-html" aria-hidden="true"></i><span>HTML</span></span>
+            <span class="tech-item"><i class="devicon-css3-plain tech-icon tech-css" aria-hidden="true"></i><span>CSS</span></span>
+            <span class="tech-item"><i class="devicon-python-plain tech-icon tech-python" aria-hidden="true"></i><span>Python</span></span>
+          </div>
+          <div class="tech-list" aria-hidden="true">
+            <span class="tech-item"><i class="devicon-javascript-plain tech-icon tech-js"></i><span>JavaScript</span></span>
+            <span class="tech-item"><i class="devicon-github-original tech-icon tech-github"></i><span>GitHub</span></span>
+            <span class="tech-item"><i class="devicon-postgresql-plain tech-icon tech-postgres"></i><span>PostgreSQL</span></span>
+            <span class="tech-item"><i class="devicon-mysql-original tech-icon tech-mysql"></i><span>MySQL</span></span>
+            <span class="tech-item"><i class="devicon-microsoftsqlserver-plain tech-icon tech-sql"></i><span>SQL Server</span></span>
+            <span class="tech-item"><i class="devicon-microsoftazure-plain tech-icon tech-azure"></i><span>Azure</span></span>
+            <span class="tech-item"><i class="devicon-render-original tech-icon tech-render"></i><span>Render</span></span>
+            <span class="tech-item"><i class="devicon-react-original tech-icon tech-react"></i><span>React</span></span>
+            <span class="tech-item"><i class="devicon-nodejs-plain tech-icon tech-node"></i><span>Node.js</span></span>
+            <span class="tech-item"><i class="devicon-html5-plain tech-icon tech-html"></i><span>HTML</span></span>
+            <span class="tech-item"><i class="devicon-css3-plain tech-icon tech-css"></i><span>CSS</span></span>
+            <span class="tech-item"><i class="devicon-python-plain tech-icon tech-python"></i><span>Python</span></span>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="project reveal">
-      <div class="project-visual"><img src="projects/Aggievet/Aggie-vet_image.png" alt="Aggie Vet"></div>
-      <div class="project-info">
-        <div class="project-meta"><span class="project-index">04</span><span class="project-year">2025</span></div>
-        <h3 class="project-name">Aggie Vet</h3>
-        <p class="project-desc">Veterinary e-commerce platform with remote consultations, pharmacy integration, and health records.</p>
-        <div class="project-stack"><span class="stack-tag">Next.js</span><span class="stack-tag">Stripe</span><span class="stack-tag">Video API</span></div>
-        <a href="https://aggie-vert.vercel.app/" target="_blank" class="project-link">View Live Site ↗</a>
+    </section>
+
+    <section class="section container" id="expertise" aria-labelledby="expertise-title">
+      <div class="section-intro">
+        <h2 id="expertise-title">One partner from concept to launch.</h2>
+        <p>I work across product thinking, interface development, backend architecture, and security, reducing handoffs and keeping the path to production clear.</p>
       </div>
-    </div>
-  </div>
-</section>
-
-<section id="journey">
-  <p class="section-label reveal">Development Journey</p>
-  <div class="timeline">
-    <div class="timeline-item reveal">
-      <span class="timeline-num">STEP 01</span>
-      <h3 class="timeline-title">Discovery & Scoping</h3>
-      <p class="timeline-desc">Aligning on vision and success metrics before writing code. Ensuring technical feasibility from the start.</p>
-    </div>
-    <div class="timeline-item reveal">
-      <span class="timeline-num">STEP 02</span>
-      <h3 class="timeline-title">Architecture & Planning</h3>
-      <p class="timeline-desc">Designing data models and API structures. Building a solid foundation for scalable products.</p>
-    </div>
-    <div class="timeline-item reveal">
-      <span class="timeline-num">STEP 03</span>
-      <h3 class="timeline-title">Iterative Development</h3>
-      <p class="timeline-desc">Staged deployments and regular progress updates. You see the product working as it grows.</p>
-    </div>
-    <div class="timeline-item reveal">
-      <span class="timeline-num">STEP 04</span>
-      <h3 class="timeline-title">Deployment & Handoff</h3>
-      <p class="timeline-desc">Final production ship with complete documentation. You own the code and the future of the product.</p>
-    </div>
-  </div>
-</section>
-
-<section id="hire">
-  <div class="hire-inner">
-    <div class="reveal">
-      <h2 class="hire-heading">Let's build something real.</h2>
-      <p style="color:var(--muted); margin-bottom:48px;">Available for projects worldwide. Remote-first collaboration.</p>
-    </div>
-    <div class="reveal reveal-delay-1">
-      <a href="mailto:mannansalifu@gmail.com" class="hire-email">mannansalifu@gmail.com</a>
-      <div class="hire-links">
-        <a href="https://github.com" target="_blank" class="hire-link">GitHub ↗</a>
-        <a href="https://linkedin.com" target="_blank" class="hire-link">LinkedIn ↗</a>
-        <a href="https://wa.me/233545489242" target="_blank" class="hire-link">WhatsApp ↗</a>
+      <div class="capabilities-grid">
+        <article class="capability">
+          <span class="number">01</span>
+          <h3>Web products</h3>
+          <p>Fast, thoughtful interfaces and dependable full-stack applications built around how people actually work.</p>
+          <ul><li>Next.js and React</li><li>TypeScript and Node.js</li><li>Responsive product design</li></ul>
+        </article>
+        <article class="capability">
+          <span class="number">02</span>
+          <h3>Business systems</h3>
+          <p>Custom tools that replace manual processes and give teams a clearer view of their operations.</p>
+          <ul><li>POS and inventory</li><li>Dashboards and CRM</li><li>Payments and integrations</li></ul>
+        </article>
+        <article class="capability">
+          <span class="number">03</span>
+          <h3>Secure foundations</h3>
+          <p>Security considered from the beginning, not added as an afterthought.</p>
+          <ul><li>Authentication and access control</li><li>Secure API design</li><li>Data protection practices</li></ul>
+        </article>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-<footer>
-  <p class="footer-copy">© 2026 <span>Abdul-Mannan Ayomah</span> Accra, Ghana</p>
-  <p style="font-family:var(--mono); font-size:11px; color:var(--muted);">Side Note, I love Music.</p>
-</footer>
+    <section class="section section-work" id="work" aria-labelledby="work-title">
+      <div class="container">
+        <div class="section-heading">
+          <div><h2 id="work-title">A few things I’ve shipped.</h2></div>
+          <p>Real products for creators, clinics, and growing businesses.</p>
+        </div>
+        <div class="projects-grid">
+          <article class="project project-featured">
+            <a href="https://addesk.sonnetghana.com" target="_blank" rel="noopener noreferrer">
+              <div class="project-image"><img src="projects/addesk/addesk_image.png" alt="AdDesk platform interface" width="1200" height="675" loading="lazy"></div>
+              <div class="project-body"><p class="project-meta">01 / 2024 · Public product</p><h3>AdDesk</h3><p class="case-study-lead">A creator-commerce platform that turns ad partnerships into a clear buying and payment flow.</p><dl class="case-study-details"><div><dt>Challenge</dt><dd>Replace back-and-forth partnership messages with a structured client journey.</dd></div><div><dt>Contribution</dt><dd>Product architecture, full-stack development, and Paystack integration.</dd></div><div><dt>Outcome</dt><dd>Creators can package services publicly while clients browse, select, and pay in one flow.</dd></div></dl><span class="text-link">View project <span aria-hidden="true">↗</span></span></div>
+            </a>
+          </article>
+          <article class="project">
+            <div class="project-image"><img src="projects/Aggievet/Aggie-vet_image.png" alt="Aggie Vet e-commerce platform" width="1200" height="675" loading="lazy"></div>
+            <div class="project-body"><p class="project-meta">02 / 2025 · Client project</p><h3>Aggie Vet</h3><p class="case-study-lead">A veterinary platform connecting pet owners with consultations, pharmacy services, and health records.</p><dl class="case-study-details"><div><dt>Challenge</dt><dd>Bring appointments, remote care, prescriptions, and medication delivery into one experience.</dd></div><div><dt>Contribution</dt><dd>Platform architecture, commerce flows, and service integrations.</dd></div><div><dt>Outcome</dt><dd>Pet owners have a clearer path from booking a consultation to managing ongoing care.</dd></div></dl><span class="project-status">Private project · Walkthrough available</span></div>
+          </article>
+          <article class="project">
+            <div class="project-image"><img src="projects/sonnet-pos/sonnet-pos_imgage.png" alt="Sonnet POS management dashboard" width="1200" height="675" loading="lazy"></div>
+            <div class="project-body"><p class="project-meta">03 / 2024 · Private system</p><h3>Sonnet POS</h3><p class="case-study-lead">An operational platform for veterinary clinics covering inventory, sales, records, and audit trails.</p><dl class="case-study-details"><div><dt>Challenge</dt><dd>Replace paper-based clinic operations with a connected system for daily work.</dd></div><div><dt>Contribution</dt><dd>Database design, role-based access, inventory, sales, and reporting workflows.</dd></div><div><dt>Outcome</dt><dd>Clinic teams can manage stock, transactions, client records, receipts, and audit history in one place.</dd></div></dl><span class="project-status">Private project · Walkthrough available</span></div>
+          </article>
+          <article class="project">
+            <a href="https://www.dopephotographygh.com" target="_blank" rel="noopener noreferrer">
+              <div class="project-image"><img src="projects/dopephotography/dopephotography_image.png" alt="Dope Photography studio website" width="1200" height="675" loading="lazy"></div>
+              <div class="project-body"><p class="project-meta">04 / 2025 · Public website</p><h3>Dope Photography</h3><p class="case-study-lead">A premium studio website with a filterable gallery, booking flows, and WhatsApp integration.</p><dl class="case-study-details"><div><dt>Challenge</dt><dd>Show the quality of the studio’s work while making enquiries simple for new clients.</dd></div><div><dt>Contribution</dt><dd>Interface design, responsive frontend, gallery filtering, and booking integration.</dd></div><div><dt>Outcome</dt><dd>A stronger visual showcase with a direct route from discovering a service to starting a conversation.</dd></div></dl><span class="text-link">View live site <span aria-hidden="true">↗</span></span></div>
+            </a>
+          </article>
+        </div>
+      </div>
+    </section>
 
-<script>
-  // Cursor
-  const cursor = document.getElementById('cursor');
-  const ring = document.getElementById('cursorRing');
-  let mx = 0, my = 0, rx = 0, ry = 0;
-  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cursor.style.left = mx + 'px'; cursor.style.top = my + 'px'; });
-  function animateRing() { rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12; ring.style.left = rx + 'px'; ring.style.top = ry + 'px'; requestAnimationFrame(animateRing); }
-  animateRing();
-  document.querySelectorAll('a, button, .project, .expertise-card').forEach(el => {
-    el.addEventListener('mouseenter', () => { cursor.classList.add('hovered'); ring.classList.add('hovered'); });
-    el.addEventListener('mouseleave', () => { cursor.classList.remove('hovered'); ring.classList.remove('hovered'); });
-  });
+    <section class="section container process-section" id="journey" aria-labelledby="journey-title">
+      <div class="section-intro"><h2 id="journey-title">A clear path to something useful.</h2></div>
+      <ol class="process-list">
+        <li><span>01</span><div><h3>Understand</h3><p>Align on the problem, audience, constraints, and definition of success.</p></div></li>
+        <li><span>02</span><div><h3>Shape</h3><p>Turn the opportunity into an understandable product and technical plan.</p></div></li>
+        <li><span>03</span><div><h3>Build</h3><p>Develop in focused stages with visible progress and regular feedback.</p></div></li>
+        <li><span>04</span><div><h3>Ship</h3><p>Launch with documentation, a clean codebase, and a foundation you can own.</p></div></li>
+      </ol>
+    </section>
 
-  // Nav scroll
-  const nav = document.getElementById('nav');
-  window.addEventListener('scroll', () => { if (nav) nav.classList.toggle('scrolled', window.scrollY > 40); });
+    <section class="contact-section" id="hire" aria-labelledby="hire-title">
+      <div class="container contact-inner">
+        <div><h2 id="hire-title">Let’s build something real.</h2><p>Available for select projects worldwide, with a remote-first approach.</p></div>
+        <div class="contact-actions"><a class="email-link" href="mailto:mannansalifu@gmail.com">mannansalifu@gmail.com</a><div class="contact-links" aria-label="Contact links">
+          <a class="contact-icon" href="https://github.com/sonnetechgh-lang" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.61-3.37-1.18-3.37-1.18-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02A9.6 9.6 0 0 1 12 7.85a9.6 9.6 0 0 1 2.5.34c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg>
+          </a>
+          <a class="contact-icon" href="https://wa.me/233545489242" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.04 2A9.91 9.91 0 0 0 2.13 11.9c0 1.75.46 3.45 1.33 4.95L2.05 22l5.28-1.38a9.9 9.9 0 0 0 4.71 1.2h.01a9.91 9.91 0 1 0 0-19.82Zm0 18.15h-.01a8.23 8.23 0 0 1-4.2-1.15l-.3-.18-3.13.82.84-3.05-.2-.31a8.24 8.24 0 1 1 7 3.87Zm4.52-6.18c-.25-.13-1.48-.73-1.71-.81-.23-.08-.4-.13-.57.13-.17.25-.65.81-.8.98-.15.17-.29.19-.54.06-.25-.13-1.05-.39-2-1.24-.74-.66-1.24-1.47-1.39-1.72-.15-.25-.02-.39.11-.52.12-.12.25-.29.38-.44.13-.15.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.57-1.37-.78-1.88-.21-.5-.42-.43-.57-.44h-.49c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1s.9 2.44 1.02 2.61c.13.17 1.76 2.69 4.27 3.77.6.26 1.07.41 1.43.52.6.19 1.14.16 1.57.1.48-.07 1.48-.61 1.69-1.2.21-.59.21-1.1.15-1.2-.06-.1-.23-.16-.48-.29Z"/></svg>
+          </a>
+          <a class="contact-icon" href="tel:+233545489242" aria-label="Call">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.62 10.79a15.46 15.46 0 0 0 6.59 6.59l2.2-2.2c.28-.28.67-.37 1.03-.25 1.12.37 2.32.57 3.56.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1C10.72 21 3 13.28 3 4c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg>
+          </a>
+        </div></div>
+      </div>
+    </section>
+  </main>
 
-  // Scroll reveal
-  const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
-  }, { threshold: 0.12 });
-  reveals.forEach(el => observer.observe(el));
-</script>
+  <footer class="site-footer"><div class="container"><span>© 2026 Abdul-Mannan Ayomah</span><span>Built in Accra · Available worldwide</span></div></footer>
+
+  <script>
+    const header = document.querySelector('.site-header');
+    const menuButton = document.querySelector('.menu-toggle');
+    const menu = document.querySelector('#site-menu');
+    window.addEventListener('scroll', () => header.classList.toggle('is-scrolled', window.scrollY > 16), { passive: true });
+    menuButton.addEventListener('click', () => {
+      const open = menuButton.getAttribute('aria-expanded') === 'true';
+      menuButton.setAttribute('aria-expanded', String(!open));
+      menuButton.querySelector('.sr-only').textContent = open ? 'Open navigation' : 'Close navigation';
+      menu.classList.toggle('is-open', !open);
+    });
+    menu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
+      menuButton.setAttribute('aria-expanded', 'false');
+      menuButton.querySelector('.sr-only').textContent = 'Open navigation';
+      menu.classList.remove('is-open');
+    }));
+  </script>
 </body>
 </html>
