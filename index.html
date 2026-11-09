@@ -19,6 +19,14 @@
   <a class="skip-link" href="#main-content">Skip to main content</a>
 
   <header class="site-header" id="site-header">
+    <aside class="reno" id="reno" aria-label="Site notice">
+      <div class="reno-inner container">
+        <span class="reno-cone" aria-hidden="true">🚧</span>
+        <p class="reno-text"><strong>Pardon the sawdust.</strong> I'm renovating my own portfolio. Turns out the builder's house really is always the last one finished.</p>
+        <span class="reno-progress" aria-hidden="true"><span class="reno-bar"><span></span></span>99%<small>the last 1% takes the longest</small></span>
+        <button class="reno-close" type="button" aria-label="Dismiss notice">×</button>
+      </div>
+    </aside>
     <nav class="nav container" aria-label="Primary navigation">
       <a href="#hero" class="brand">Abdul-Mannan<span>.</span></a>
       <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu">
@@ -179,6 +187,12 @@
     const header = document.querySelector('.site-header');
     const menuButton = document.querySelector('.menu-toggle');
     const menu = document.querySelector('#site-menu');
+    const reno = document.querySelector('#reno');
+    try { if (sessionStorage.getItem('reno-dismissed')) reno.hidden = true; } catch (e) {}
+    reno.querySelector('.reno-close').addEventListener('click', () => {
+      reno.hidden = true;
+      try { sessionStorage.setItem('reno-dismissed', '1'); } catch (e) {}
+    });
     window.addEventListener('scroll', () => header.classList.toggle('is-scrolled', window.scrollY > 16), { passive: true });
     menuButton.addEventListener('click', () => {
       const open = menuButton.getAttribute('aria-expanded') === 'true';

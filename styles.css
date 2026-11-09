@@ -143,3 +143,32 @@ h3 { letter-spacing: -.025em; }
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
   .tech-track { animation: none; }
 }
+
+/* Maintenance banner */
+.reno { position: relative; background: #1d1d1f; color: #f5f5f7; font-size: .85rem; border-bottom: 3px solid transparent; border-image: repeating-linear-gradient(-45deg, var(--highlight) 0 10px, #1d1d1f 10px 20px) 3; }
+.reno[hidden] { display: none; }
+.reno-inner { display: flex; align-items: center; gap: .9rem; min-height: 44px; padding-block: .5rem; }
+.reno-cone { font-size: 1.15rem; display: inline-block; transform-origin: 50% 90%; animation: reno-wobble 2.4s ease-in-out infinite; }
+.reno-text { margin: 0; flex: 1; line-height: 1.4; }
+.reno-text strong { color: var(--highlight); }
+.reno-progress { display: flex; align-items: center; gap: .5rem; font-family: var(--mono); font-size: .75rem; white-space: nowrap; }
+.reno-progress small { color: #a1a1a6; font-family: var(--sans); }
+.reno-bar { width: 72px; height: 6px; border-radius: 99px; background: #38383a; overflow: hidden; }
+.reno-bar span { display: block; height: 100%; width: 99%; background: var(--highlight); animation: reno-fill 3s ease-out infinite alternate; }
+.reno-close { flex: none; width: 32px; height: 32px; border: 0; border-radius: 50%; background: transparent; color: inherit; font-size: 1.25rem; line-height: 1; cursor: pointer; }
+.reno-close:hover { background: #38383a; }
+@keyframes reno-wobble { 0%, 100% { transform: rotate(0); } 20% { transform: rotate(-12deg); } 40% { transform: rotate(9deg); } 60% { transform: rotate(-4deg); } }
+@keyframes reno-fill { 0% { width: 92%; } 100% { width: 99%; } }
+@media (max-width: 800px) {
+  .reno-progress { display: none; }
+  .reno-inner { width: calc(100% - 32px); gap: .6rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reno-cone, .reno-bar span { animation: none; }
+}
+.nav { position: relative; }
+body:has(.reno:not([hidden])) .hero { padding-block-start: calc(9rem + 48px); }
+@media (max-width: 800px) {
+  .nav-links { inset: 100% 0 auto; }
+  body:has(.reno:not([hidden])) .hero { padding-block-start: calc(8rem + 76px); }
+}
